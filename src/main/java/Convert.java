@@ -18,17 +18,37 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Convert {
+  public static void main2(String[] args) throws IOException, JAXBException {
+    if (args.length != 1 || args[0].endsWith(".json")) {
+      System.err.println("Syntax: Convert <routefile.json>");
+      System.err.println("Output will be <routefile.gpx>");
+      System.exit(1);
+    }
+
+    String inFile = args[0];
+
+    convert(inFile);
+  }
+
   public static void main(String[] args) throws IOException, JAXBException {
     convert("data/Schneeschuhtouren-leicht/Hochhamm_Rundtour_ab_Schönengrund_2021-01-27.json");
     convert("data/Schneeschuhtouren-leicht/Hundwiler_Höhi_Von_Gonten_2021-01-27.json");
+    convert("data/Schneeschuhtouren-leicht/Hofalpli_Von_Mullern_2021-01-31.json");
   }
 
-  private static void convert(String infile) throws IOException, JAXBException {
+  private static void convert(String inFile) throws IOException, JAXBException {
+    String outFile = inFile.substring(0, inFile.length() - 5) + ".gpx";
+    convert(inFile, outFile);
+  }
+
+  private static void convert(String infile, String outFile) throws IOException, JAXBException {
     Swisstopo swisstopo = load(infile);
+    dump(swisstopo);
+    Gpx gpx = transform(swisstopo);
+    save(outFile, gpx);
+  }
 
-    System.out.println();
-    swisstopo.segments.forEach(s -> System.out.println(s.title));
-
+  private static Gpx transform(Swisstopo swisstopo) {
     List<Gpx.Trkseg> trksegList =
         swisstopo.segments.stream()
             .map(
@@ -58,8 +78,12 @@ public class Convert {
     Gpx.Trk trk = new Gpx.Trk();
     trk.trkseg = trksegList;
     gpx.trk = Arrays.asList(trk);
+    return gpx;
+  }
 
-    save(infile, gpx);
+  private static void dump(Swisstopo swisstopo) {
+    System.out.println();
+    swisstopo.segments.forEach(s -> System.out.println(s.title));
   }
 
   private static Gpx.Trkpt trkpt() {
@@ -69,13 +93,13 @@ public class Convert {
     return trkpt;
   }
 
-  private static void save(String infile, Gpx gpx) throws JAXBException, FileNotFoundException {
+  private static void save(String outFile, Gpx gpx) throws JAXBException, FileNotFoundException {
     JAXBContext contextObj = JAXBContext.newInstance(Gpx.class);
 
     Marshaller marshallerObj = contextObj.createMarshaller();
     marshallerObj.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-    marshallerObj.marshal(gpx, new FileOutputStream(infile + ".gpx"));
+    marshallerObj.marshal(gpx, new FileOutputStream(outFile));
   }
 
   private static Swisstopo load(String infile) throws IOException {
