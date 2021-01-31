@@ -1,3 +1,5 @@
+package ch.alder.swisstoposacgpx;
+
 import ch.swisstopo.ApproxSwissProj;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -17,26 +19,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Convert {
-  public static void main2(String[] args) throws IOException, JAXBException {
-    if (args.length != 1 || args[0].endsWith(".json")) {
-      System.err.println("Syntax: Convert <routefile.json>");
-      System.err.println("Output will be <routefile.gpx>");
-      System.exit(1);
-    }
-
-    String inFile = args[0];
-
-    convert(inFile);
-  }
-
-  public static void main(String[] args) throws IOException, JAXBException {
-    convert("data/Schneeschuhtouren-leicht/Hochhamm_Rundtour_ab_Schönengrund_2021-01-27.json");
-    convert("data/Schneeschuhtouren-leicht/Hundwiler_Höhi_Von_Gonten_2021-01-27.json");
-    convert("data/Schneeschuhtouren-leicht/Hofalpli_Von_Mullern_2021-01-31.json");
-  }
-
-  private static void convert(String inFile) throws IOException, JAXBException {
+public class Transformer {
+  public static void convert(String inFile) throws IOException, JAXBException {
     String outFile = inFile.substring(0, inFile.length() - 5) + ".gpx";
     convert(inFile, outFile);
   }

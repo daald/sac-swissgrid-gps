@@ -17,8 +17,7 @@ Unfortunately, you need to login to get the source data. To get a file, do the f
 
 ## converting:
 
-1. Adjust the path in the Convert.java file to the file you just saved
-2. Run the main class Convert.java (I assume you know how to handle java)
+1. Run the main class ch.alder.swisstoposacgpx.Main with the .json file as argument (I assume you know how to handle java)
 
 ## Disclaimer:
 

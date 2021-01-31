@@ -1,5 +1,9 @@
 apply plugin: 'java'
 
+test {
+    useJUnitPlatform()
+}
+
 repositories {
     jcenter()
 }
@@ -10,9 +14,10 @@ dependencies {
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-xml
     compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.12.1'
 
-
-//    compile('javax.xml.bind:jaxb-api:2.3.0')
-//    compile('javax.activation:activation:1.1')
+    //compile('javax.xml.bind:jaxb-api:2.3.0')
+    //compile('javax.activation:activation:1.1')
     compile('org.glassfish.jaxb:jaxb-runtime:2.3.0')  // needed for saving xml
 
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
 }
