@@ -15,9 +15,14 @@ Unfortunately, you need to login to get the source data. To get a file, do the f
 8. Save to contents of this file in your developer tool, using the clipboard or any other way you know
 9. Save the file into the data directory of the downloaded project
 
-## converting:
+## converting in IDE:
 
 1. Run the main class ch.alder.swisstoposacgpx.Main with the .json file as argument (I assume you know how to handle java)
+
+## converting using build:
+
+1. run `./gradlew fatJar`
+2. run `java -jar ./build/libs/swissgrid-gps-all.jar <yourfile>.json`
 
 ## Disclaimer:
 
