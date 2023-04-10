@@ -24,47 +24,26 @@ public class Transformer {
     String outFile = inFile.substring(0, inFile.length() - 5) + ".gpx";
     Gpx gpx;
     try {
-      gpx = convertSchweizMobil(inFile);
+      gpx = TransformerSchweizMobil.convertSchweizMobil(inFile);
     } catch (InvalidInputFileException e) {
-      gpx = convertSwisstopo(inFile);
+      try {
+        gpx = TransformerSwisstopo.convertSwisstopo(inFile);
+      } catch (InvalidInputFileException e2) {
+        try {
+          gpx = TransformerSchweizMobil4.convertSchweizMobil4(inFile);
+        } catch (InvalidInputFileException e3) {
+          e.printStackTrace();
+          e2.printStackTrace();
+          e3.printStackTrace();
+          System.exit(1);
+          return;
+        }
+      }
     }
     save(outFile, gpx);
   }
 
-  private static Gpx convertSwisstopo(String infile) throws IOException {
-    Swisstopo swisstopo = loadSwisstopo(infile);
-    dump(swisstopo);
-    return transform(swisstopo);
-  }
-
-  private static Gpx convertSchweizMobil(String infile) throws IOException {
-    SchweizMobil schweizMobil = loadSchweizMobil(infile);
-    dump(schweizMobil);
-    return transform(schweizMobil);
-  }
-
-  private static Gpx transform(Swisstopo swisstopo) {
-    List<Gpx.Trkseg> trksegList =
-        swisstopo.segments.stream()
-            .map(
-                s -> {
-                  Gpx.Trkseg seg = new Gpx.Trkseg();
-                  seg.trkpt =
-                      s.geom.coordinates.stream()
-                          .map(c -> swissToTrkpt(c.get(1), c.get(0)))
-                          .collect(Collectors.toList());
-                  return seg;
-                })
-            .collect(Collectors.toList());
-
-    Gpx gpx = new Gpx();
-    Gpx.Trk trk = new Gpx.Trk();
-    trk.trkseg = trksegList;
-    gpx.trk = Arrays.asList(trk);
-    return gpx;
-  }
-
-  private static Gpx.Trkpt swissToTrkpt(Double east, Double north) {
+   static Gpx.Trkpt swissToTrkpt(Double east, Double north) {
     if (north >= 1000000 && east >= 1000000) {
       if (north >= 2000000) {
         Double big = north;
@@ -88,38 +67,6 @@ public class Transformer {
     return trkpt;
   }
 
-  private static Gpx transform(SchweizMobil schweizMobil) {
-    List<Gpx.Trkseg> trksegList =
-        schweizMobil.features.stream()
-            .flatMap(feature -> feature.geometry.coordinates.stream())
-            .map(
-                coordinates -> {
-                  Gpx.Trkseg seg = new Gpx.Trkseg();
-                  seg.trkpt =
-                      coordinates.stream()
-                          .map(c -> swissToTrkpt(c.get(0), c.get(1)))
-                          .collect(Collectors.toList());
-                  return seg;
-                })
-            .collect(Collectors.toList());
-
-    Gpx gpx = new Gpx();
-    Gpx.Trk trk = new Gpx.Trk();
-    trk.trkseg = trksegList;
-    gpx.trk = Arrays.asList(trk);
-    return gpx;
-  }
-
-  private static void dump(Swisstopo swisstopo) {
-    System.out.println();
-    swisstopo.segments.forEach(s -> System.out.println(s.title));
-  }
-
-  private static void dump(SchweizMobil schweizMobil) {
-    System.out.println();
-    schweizMobil.features.forEach(feature -> System.out.println(feature.properties.title));
-  }
-
   private static void save(String outFile, Gpx gpx) throws JAXBException, FileNotFoundException {
     JAXBContext contextObj = JAXBContext.newInstance(Gpx.class);
 
@@ -127,26 +74,5 @@ public class Transformer {
     marshallerObj.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
     marshallerObj.marshal(gpx, new FileOutputStream(outFile));
-  }
-
-  private static Swisstopo loadSwisstopo(String infile) throws IOException {
-    ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    File file = new File(infile);
-    Swisstopo swisstopo = mapper.readValue(file, Swisstopo.class);
-
-    if (swisstopo.segments == null) throw new InvalidInputFileException("Not a Swisstopo file");
-    return swisstopo;
-  }
-
-  private static SchweizMobil loadSchweizMobil(String infile) throws IOException {
-    ObjectMapper mapper = new ObjectMapper(new JsonFactory());
-    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    File file = new File(infile);
-    SchweizMobil schweizMobil = mapper.readValue(file, SchweizMobil.class);
-
-    if (schweizMobil.features == null)
-      throw new InvalidInputFileException("Not a SchweizMobil file");
-    return schweizMobil;
   }
 }
