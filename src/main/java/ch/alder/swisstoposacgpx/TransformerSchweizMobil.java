@@ -1,6 +1,5 @@
 package ch.alder.swisstoposacgpx;
 
-import ch.swisstopo.ApproxSwissProj;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,7 +25,7 @@ public class TransformerSchweizMobil {
     File file = new File(infile);
     SchweizMobil schweizMobil = mapper.readValue(file, SchweizMobil.class);
 
-    if (schweizMobil.features == null )
+    if (schweizMobil.features == null)
       throw new InvalidInputFileException("Not a SchweizMobil file");
     return schweizMobil;
   }
@@ -50,6 +49,9 @@ public class TransformerSchweizMobil {
     Gpx.Trk trk = new Gpx.Trk();
     trk.trkseg = trksegList;
     gpx.trk = Arrays.asList(trk);
+    gpx.metadata = new Gpx.Metadata();
+    gpx.metadata.name = schweizMobil.features.get(0).properties.title;
+    gpx.metadata.desc = schweizMobil.features.get(0).properties.description;
     return gpx;
   }
 

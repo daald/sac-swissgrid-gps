@@ -47,6 +47,9 @@ public class TransformerSwisstopo {
     Gpx.Trk trk = new Gpx.Trk();
     trk.trkseg = trksegList;
     gpx.trk = Arrays.asList(trk);
+//    gpx.metadata=new Gpx.Metadata();
+//    gpx.metadata.name=swisstopo.;
+//    gpx.metadata.desc="From Swisstopo "+swisstopo.id;
     return gpx;
   }
 

@@ -21,7 +21,7 @@ Unfortunately, you need to login to get the source data. To get a file, do the f
 
 ## converting using build:
 
-1. run `./gradlew fatJar`
+1. run `./gradlew jar`
 2. run `java -jar ./build/libs/swissgrid-gps-all.jar <yourfile>.json`
 
 ## Working with Schweizmobil files

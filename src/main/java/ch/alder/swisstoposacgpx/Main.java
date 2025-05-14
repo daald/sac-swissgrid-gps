@@ -1,10 +1,9 @@
 package ch.alder.swisstoposacgpx;
 
-import javax.xml.bind.JAXBException;
 import java.io.IOException;
 
 public class Main {
-  public static void main(String[] args) throws IOException, JAXBException {
+  public static void main(String[] args) throws IOException {
     if (args.length != 1 || !args[0].endsWith(".json")) {
       System.err.println("Syntax: ch.alder.swisstoposacgpx.Main <routefile.json>");
       System.err.println("Output will be <routefile.gpx>");

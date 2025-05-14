@@ -3,16 +3,11 @@ package ch.alder.swisstoposacgpx;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import entity.SchweizMobil;
-import entity.SchweizMobil4;
 import entity.SchweizMobil4;
 import entity.gpx.Gpx;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.DriverManager;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,13 +33,16 @@ public class TransformerSchweizMobil4 {
     Gpx.Trkseg seg = new Gpx.Trkseg();
     seg.trkpt =
             schweizMobil.geometry.coordinates.stream()
-                                              .map(c -> Transformer.swissToTrkpt(c.get(0), c.get(1)))
-                                              .collect(Collectors.toList());
+                    .map(c -> Transformer.swissToTrkpt(c.get(0), c.get(1)))
+                    .collect(Collectors.toList());
 
     Gpx gpx = new Gpx();
     Gpx.Trk trk = new Gpx.Trk();
     trk.trkseg = List.of(seg);
     gpx.trk = List.of(trk);
+    gpx.metadata = new Gpx.Metadata();
+    gpx.metadata.name = schweizMobil.properties.name;
+    gpx.metadata.desc = "From Schweizmobil " + schweizMobil.id;
     return gpx;
   }
 

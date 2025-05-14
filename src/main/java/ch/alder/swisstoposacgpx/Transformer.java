@@ -1,26 +1,14 @@
 package ch.alder.swisstoposacgpx;
 
 import ch.swisstopo.ApproxSwissProj;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import entity.SchweizMobil;
-import entity.Swisstopo;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import entity.gpx.Gpx;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class Transformer {
-  public static void convert(String inFile) throws IOException, JAXBException {
+  public static void convert(String inFile) throws IOException {
     String outFile = inFile.substring(0, inFile.length() - 5) + ".gpx";
     Gpx gpx;
     try {
@@ -43,7 +31,7 @@ public class Transformer {
     save(outFile, gpx);
   }
 
-   static Gpx.Trkpt swissToTrkpt(Double east, Double north) {
+  static Gpx.Trkpt swissToTrkpt(Double east, Double north) {
     if (north >= 1000000 && east >= 1000000) {
       if (north >= 2000000) {
         Double big = north;
@@ -67,12 +55,9 @@ public class Transformer {
     return trkpt;
   }
 
-  private static void save(String outFile, Gpx gpx) throws JAXBException, FileNotFoundException {
-    JAXBContext contextObj = JAXBContext.newInstance(Gpx.class);
+  private static void save(String outFile, Gpx gpx) throws IOException {
+    XmlMapper xm = new XmlMapper();
 
-    Marshaller marshallerObj = contextObj.createMarshaller();
-    marshallerObj.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-    marshallerObj.marshal(gpx, new FileOutputStream(outFile));
+    xm.writeValue(new File(outFile), gpx);
   }
 }
