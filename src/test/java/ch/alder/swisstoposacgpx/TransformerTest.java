@@ -15,7 +15,8 @@ class TransformerTest {
           "data/Schneeschuhtouren-leicht/Hochalp Trail - rossmoos.json",
           "data/Schneeschuhtouren-leicht/Hochhamm_Rundtour_ab_Schönengrund_2021-01-27.json",
           "data/Schneeschuhtouren-leicht/Hundwiler_Höhi_Von_Gonten_2021-01-27.json",
-          "data/Schneeschuhtouren-leicht/Hofalpli_Von_Mullern_2021-01-31.json"
+          "data/Schneeschuhtouren-leicht/Hofalpli_Von_Mullern_2021-01-31.json",
+          "data/schweizmobil4/2571626.json"
   })
   void fullTest(String inFile, @TempDir File outDir) throws IOException, SAXException {
     System.out.println("Infile: " + inFile);
