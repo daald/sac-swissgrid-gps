@@ -18,7 +18,9 @@ public class Gpx {
   public String version = "1.1";
 
   @JacksonXmlProperty(isAttribute = true)
-  private String xmlns = "http://www.topografix.com/GPX/1/1";
+  public String xmlns = "http://www.topografix.com/GPX/1/1";
+  @JacksonXmlProperty(isAttribute = true, localName = "schemaLocation", namespace = "http://www.w3.org/2001/XMLSchema-instance")
+  public String xsiSchemaLocation = "http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd";
 
   @JsonInclude(JsonInclude.Include.NON_EMPTY)
   public static class Metadata {
