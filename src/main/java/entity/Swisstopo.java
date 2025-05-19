@@ -10,6 +10,8 @@ public class Swisstopo {
   public List<AuthorMap> authors;
   public String availability;
   public Book book;
+  public String title;
+  public String teaser;
 
   public static class Book {
     public String author;

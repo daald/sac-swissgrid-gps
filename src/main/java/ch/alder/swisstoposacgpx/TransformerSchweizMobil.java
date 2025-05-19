@@ -8,7 +8,6 @@ import entity.gpx.Gpx;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,11 +47,18 @@ public class TransformerSchweizMobil {
     Gpx gpx = new Gpx();
     Gpx.Trk trk = new Gpx.Trk();
     trk.trkseg = trksegList;
-    gpx.trk = Arrays.asList(trk);
+    gpx.trk = List.of(trk);
     gpx.metadata = new Gpx.Metadata();
     gpx.metadata.name = schweizMobil.features.get(0).properties.title;
     gpx.metadata.desc = schweizMobil.features.get(0).properties.description;
+    gpx.metadata.author = map(schweizMobil);
     return gpx;
+  }
+
+  private static Gpx.AuthorType map(SchweizMobil schweizMobil) {
+    Gpx.AuthorType author = new Gpx.AuthorType();
+    author.name = schweizMobil.features.get(0).properties.name;
+    return author;
   }
 
   private static void dump(SchweizMobil schweizMobil) {

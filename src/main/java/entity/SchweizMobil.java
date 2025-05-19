@@ -22,5 +22,6 @@ public class SchweizMobil {
     public String title;
     public String description;
     public String abstract_;
+    public String name;
   }
 }

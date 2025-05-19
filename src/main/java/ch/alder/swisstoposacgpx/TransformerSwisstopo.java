@@ -8,8 +8,8 @@ import entity.gpx.Gpx;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class TransformerSwisstopo {
@@ -46,11 +46,20 @@ public class TransformerSwisstopo {
     Gpx gpx = new Gpx();
     Gpx.Trk trk = new Gpx.Trk();
     trk.trkseg = trksegList;
-    gpx.trk = Arrays.asList(trk);
-//    gpx.metadata=new Gpx.Metadata();
-//    gpx.metadata.name=swisstopo.;
-//    gpx.metadata.desc="From Swisstopo "+swisstopo.id;
+    gpx.trk = List.of(trk);
+    gpx.metadata = new Gpx.Metadata();
+    gpx.metadata.name = swisstopo.title;
+    gpx.metadata.desc = swisstopo.teaser;
+    gpx.metadata.author = map(swisstopo);
     return gpx;
+  }
+
+  private static Gpx.AuthorType map(Swisstopo swisstopo) {
+    Gpx.AuthorType author = new Gpx.AuthorType();
+    author.name = Optional.of(swisstopo.authors).map(ar -> ar.get(0).author)
+            .orElse(swisstopo.author)
+            .full_name;
+    return author;
   }
 
   private static void dump(Swisstopo swisstopo) {

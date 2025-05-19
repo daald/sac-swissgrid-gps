@@ -1,6 +1,7 @@
 package ch.alder.swisstoposacgpx;
 
 import ch.swisstopo.ApproxSwissProj;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import entity.gpx.Gpx;
 
@@ -10,15 +11,22 @@ import java.io.IOException;
 public class Transformer {
   public static void convert(String inFile) throws IOException {
     String outFile = inFile.substring(0, inFile.length() - 5) + ".gpx";
+    convert(inFile, outFile);
+  }
+
+  public static void convert(String inFile, String outFile) throws IOException {
     Gpx gpx;
     try {
       gpx = TransformerSchweizMobil.convertSchweizMobil(inFile);
+      System.out.println("Input format was: " + "SchweizMobil");
     } catch (InvalidInputFileException e) {
       try {
         gpx = TransformerSwisstopo.convertSwisstopo(inFile);
+        System.out.println("Input format was: " + "Swisstopo");
       } catch (InvalidInputFileException e2) {
         try {
           gpx = TransformerSchweizMobil4.convertSchweizMobil4(inFile);
+          System.out.println("Input format was: " + "SchweizMobil4");
         } catch (InvalidInputFileException e3) {
           e.printStackTrace();
           e2.printStackTrace();
@@ -57,6 +65,7 @@ public class Transformer {
 
   private static void save(String outFile, Gpx gpx) throws IOException {
     XmlMapper xm = new XmlMapper();
+    xm.enable(SerializationFeature.INDENT_OUTPUT);
 
     xm.writeValue(new File(outFile), gpx);
   }
